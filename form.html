@@ -1,39 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liam's Personal Link Aggregator</title>
-    <link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liam's Personal Link Aggregator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>  
-<h1>Contact Us</h1>
-<br>
-<form>  
+  <h1>Contact Us</h1>
+  <br>
+  <form id="contact-form">  
     <div>  
-        <label for="fname">First Name:</label>
-        <input type="text" id="fname" name="fname" placeholder="first name" required>
+      <label for="fname">First Name:</label>
+      <input type="text" id="fname" name="fname" placeholder="First name" required>
     </div>
-<br>
+    <br>
     <div>
-        <label for="lname">Last Name:</label>
-        <input type="text" id="lname" name="lname" placeholder="last name" required>
+      <label for="lname">Last Name:</label>
+      <input type="text" id="lname" name="lname" placeholder="Last name" required>
     </div>
-<br>
+    <br>
     <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="email" required>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Email" required>
     </div>
-<br>
+    <br>
     <div>   
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" placeholder="Write your message here" required></textarea>
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" placeholder="Write your message here" required></textarea>
     </div>
-<br>
+    <br>
     <div>
-        <input type="submit" value="Submit">
+      <input type="submit" value="Submit">
     </div>
-    
-</form>
+  </form>
+
+  <!-- Amplify JS -->
+  <script src="https://unpkg.com/aws-amplify@6.x/dist/aws-amplify.min.js"></script>
+  <script>
+    // Replace these with your values from Amplify Studio
+    const API_ENDPOINT = https://eu-north-1.console.aws.amazon.com/appsync/home?region=eu-north-1#/lozhlvdy7zazzkyegy4fjgz2ey/v1/home;
+    const API_KEY = da2-iu43cwb6zzahffgq2zf4qx2dxe;
+    const REGION = eu-north-1;
+
+    Amplify.configure({
+      API: {
+        graphql_endpoint: API_ENDPOINT,
+        region: REGION,
+        authMode: "API_KEY",
+        apiKey: API_KEY
+      }
+    });
+
+    document.getElementById("contact-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("fname").value + " " + document.getElementById("lname").value;
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message").value;
+
+      try {
+        await Amplify.API.graphql({
+          query: `
+            mutation CreateContactFormSubmission($input: CreateContactFormSubmissionInput!) {
+              createContactFormSubmission(input: $input) {
+                id
+                name
+                email
+                message
+                submittedAt
+              }
+            }
+          `,
+          variables: {
+            input: {
+              name: name,
+              email: email,
+              message: message,
+              submittedAt: new Date().toISOString()
+            }
+          }
+        });
+
+        alert("Message sent!");
+        e.target.reset();
+      } catch (err) {
+        console.error(err);
+        alert("Failed to send message");
+      }
+    });
+  </script>
 </body>
 </html>
