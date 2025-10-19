@@ -10,6 +10,14 @@
       "StackName": "amplify-linkaggregator-dev-dd318",
       "StackId": "arn:aws:cloudformation:eu-north-1:410947917646:stack/amplify-linkaggregator-dev-dd318/27e14ff0-ad03-11f0-b8c6-0e49c7abe64b",
       "AmplifyAppId": "d12bikatzo6wkz"
+    },
+    "categories": {
+      "api": {
+        "linkaggregator": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
     }
   }
 }
